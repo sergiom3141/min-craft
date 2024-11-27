@@ -27,7 +27,7 @@ while True:
 	postorderlist = []
 
 	recipe.DFS(recipeGraph,recipeName,postorderlist,visited)
-	print(postorderlist)
+
 	reversepostorderlist,index = recipe.reverse_postorder(postorderlist)
 	relaxedrequirements, topologicalorder = recipe.relax_comp_req(reversepostorderlist,index,numberNeeded)
 	
