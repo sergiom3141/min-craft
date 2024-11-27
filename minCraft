@@ -4,7 +4,8 @@ import re
 import pickle
 import sys
 
-sys.path.append('/home/sergio/Dropbox (MIT)/scripts/homeScripts')
+# sys.path.append('/home/sergio/Dropbox (MIT)/scripts/homeScripts')
+sys.path.append('.')
 from recipes import recipe,recipeBook,recipeGraph
 
 
@@ -17,14 +18,13 @@ for item in recipeBook:
 while True:
 
 	newBuildIdea = input("What would you like to craft?: ")
-	recipeNameAndNumber = inputPattern.findall(newBuildIdea)
 
+	recipeNameAndNumber = inputPattern.findall(newBuildIdea)
 	recipeName = recipeNameAndNumber[0][1]
 	numberNeeded = int(recipeNameAndNumber[0][0])
+
 	visited = {item:False for item in recipeGraph}
 	postorderlist = []
-	recipeName = recipeNameAndNumber[0][1]
-	currentRecipe = recipeBook[recipeName]
 
 	recipe.DFS(recipeGraph,recipeName,postorderlist,visited)
 	print(postorderlist)
