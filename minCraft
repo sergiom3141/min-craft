@@ -1,0 +1,38 @@
+#!/usr/bin/python3
+
+import re
+import pickle
+import sys
+
+sys.path.append('/home/sergio/Dropbox (MIT)/scripts/homeScripts')
+from recipes import recipe,recipeBook,recipeGraph
+
+
+
+inputPattern = re.compile('([0-9]+) ([a-zA-Z]+)')
+
+for item in recipeBook:
+	recipeBook[item].printRecipe()
+
+while True:
+
+	newBuildIdea = input("What would you like to craft?: ")
+	recipeNameAndNumber = inputPattern.findall(newBuildIdea)
+
+	recipeName = recipeNameAndNumber[0][1]
+	numberNeeded = int(recipeNameAndNumber[0][0])
+	visited = {item:False for item in recipeGraph}
+	postorderlist = []
+	recipeName = recipeNameAndNumber[0][1]
+	currentRecipe = recipeBook[recipeName]
+
+	recipe.DFS(recipeGraph,recipeName,postorderlist,visited)
+	print(postorderlist)
+	reversepostorderlist,index = recipe.reverse_postorder(postorderlist)
+	relaxedrequirements, topologicalorder = recipe.relax_comp_req(reversepostorderlist,index,numberNeeded)
+	
+	print(str(recipe.base_resources(relaxedrequirements,reversepostorderlist)))
+	recipe.print_topo_order(topologicalorder,relaxedrequirements)
+
+
+

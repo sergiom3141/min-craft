@@ -1,0 +1,63 @@
+#!/usr/bin/python3
+
+import re
+import pickle
+import sys
+
+sys.path.append("/home/sergio/Dropbox (MIT)/scripts/homeScripts")
+from recipes import recipe
+
+with open("recipes","r") as recipes:
+	recipeString = recipes.read()
+
+def loadRecipes():
+	recipeList = re.split('\n',recipeString)
+	partPat = '(\d+)\s+(\w+)'
+	partPattern = re.compile(partPat)
+
+	for recipeLine in recipeList:
+		if recipeLine == '':
+			continue
+		ingredientList = {}
+		recipeNumsAndItems = partPattern.findall(recipeLine)
+
+		for i in range(len(recipeNumsAndItems)):
+			if i == 0:
+				recipeName = recipeNumsAndItems[0][1]
+				recipeYield = int(recipeNumsAndItems[0][0])
+			else:
+				ingredientList[recipeNumsAndItems[i][1]] = int(recipeNumsAndItems[i][0])
+
+		recipeBook[recipeName] = recipe(recipeName,recipeYield,ingredientList)
+
+def makeRecipeGraph():
+	recipeList = re.split('\n',recipeString)
+	partPat = '(\d+)\s+(\w+)'
+	partPattern = re.compile(partPat)
+
+	for recipeLine in recipeList:
+		if recipeLine == '':
+			continue
+			
+		recipeNumsAndItems = partPattern.findall(recipeLine)
+		recipeName = recipeNumsAndItems[0][1]
+		recipeGraph[recipeName] = set()
+
+		for i in range(1,len(recipeNumsAndItems)):
+			ingredientName = recipeNumsAndItems[i][1]
+			recipeGraph[recipeName].add(ingredientName)
+
+recipeBook = {}
+recipeGraph = {}
+
+loadRecipes()
+makeRecipeGraph()
+print(recipeGraph)
+
+for item in recipeBook:
+	print(recipeBook[item].printRecipe())
+
+with open('recipeData','wb') as data:
+    pickle.dump(recipeBook,data,protocol=pickle.HIGHEST_PROTOCOL)
+with open('recipeGraph','wb') as graphData:
+	pickle.dump(recipeGraph,graphData,protocol=pickle.HIGHEST_PROTOCOL)
